@@ -2,10 +2,16 @@ package com.kardex.kardex.api.api;
 
 import com.kardex.kardex.api.model.ProductoDto;
 import com.kardex.kardex.api.service.ProductoService;
+import com.zaxxer.hikari.pool.HikariPool;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -14,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class ProductosApi {
 
     private final ProductoService productoService;
+
+    private DataSource dataSource;
 
     @PostMapping
     public ResponseEntity saveProducto(@RequestBody ProductoDto productoDto){
@@ -43,5 +51,19 @@ public class ProductosApi {
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping(value = "/connection")
+    public Object datasourceMonitoring() {
+        HikariPool hikariPool = (HikariPool) new DirectFieldAccessor(dataSource).getPropertyValue("pool");
+
+        Map<String, Object> params = new HashMap<>();
+
+        if (hikariPool != null) {
+            params.put("activeConnections", hikariPool.getActiveConnections());
+            params.put("idleConnections", hikariPool.getIdleConnections());
+            params.put("totalConnections", hikariPool.getTotalConnections());
+        }
+        return params;
     }
 }

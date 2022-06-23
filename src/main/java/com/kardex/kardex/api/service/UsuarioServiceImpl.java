@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class UsuarioServiceImpl implements UsuarioService{
+public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioDao usuarioDao;
 
@@ -39,7 +39,7 @@ public class UsuarioServiceImpl implements UsuarioService{
         try {
             usuarioDao.deleteById(id);
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
